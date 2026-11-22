@@ -20,5 +20,3 @@ def setup_logger():
     root_logger.addHandler(ch)
 
     return root_logger
-
-setup_logger()
