@@ -10,7 +10,7 @@ class Project(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     organizer_id: Mapped[int] = mapped_column(
-        Integer, ForeignKey("users.id"), nullable=False, comment="ID организатора"
+        Integer, ForeignKey("users.id", use_alter=True), nullable=False, comment="ID организатора"
     )
     name: Mapped[str] = mapped_column(String(150), nullable=False, comment="Название проекта")
     description: Mapped[str | None] = mapped_column(Text, nullable=True, comment="Описание")

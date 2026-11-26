@@ -43,7 +43,7 @@ class User(Base):
     organization_id: Mapped[int | None] = mapped_column(Integer, ForeignKey("organizations.id"), nullable=True)
     
     team_id: Mapped[int | None] = mapped_column(
-    Integer, ForeignKey("teams.id"), nullable=True, comment="ID команды"
+    Integer, ForeignKey("teams.id", use_alter=True), nullable=True, comment="ID команды"
 )
     
     added_to_team_date: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
