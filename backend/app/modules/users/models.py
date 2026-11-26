@@ -42,14 +42,17 @@ class User(Base):
     role_id: Mapped[int | None] = mapped_column(Integer, ForeignKey("roles.id"), nullable=True)
     organization_id: Mapped[int | None] = mapped_column(Integer, ForeignKey("organizations.id"), nullable=True)
     
-    # ВРЕМЕННО без ForeignKey, так как таблицы teams ещё нет. 
-    # FK будет добавлен при создании модели Team.
-    team_id: Mapped[int | None] = mapped_column(Integer, nullable=True, comment="ID команды")
+    team_id: Mapped[int | None] = mapped_column(
+    Integer, ForeignKey("teams.id"), nullable=True, comment="ID команды"
+)
     
     added_to_team_date: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
 
     role: Mapped["Role | None"] = relationship(back_populates="users")
     organization: Mapped["Organization | None"] = relationship(back_populates="users")
+    team: Mapped["Team | None"] = relationship(
+        "Team", back_populates="members", foreign_keys=[team_id]
+)
 
     def __repr__(self) -> str:
         return f"<User {self.login} ({self.email})>"
