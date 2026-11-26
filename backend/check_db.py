@@ -3,6 +3,9 @@ from app.core.db import engine, Base
 
 # Обязательно импортируем модели, чтобы SQLAlchemy знал о них перед create_all
 from app.modules.users.models import User, Role, Organization
+from app.modules.projects.models import Project
+from app.modules.teams.models import Team
+from app.modules.invitations.models import Invitation
 
 
 async def test_connection():
