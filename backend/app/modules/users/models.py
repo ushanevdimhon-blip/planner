@@ -18,7 +18,7 @@ class Organization(Base):
     __tablename__ = "organizations"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
-    name: Mapped[str] = mapped_column(String(200), nullable=False)
+    name: Mapped[str] = mapped_column(String(200), unique=True, nullable=False)
     address: Mapped[str | None] = mapped_column(String(255), nullable=True)
     phone: Mapped[str | None] = mapped_column(String(20), nullable=True)
     email: Mapped[str | None] = mapped_column(String(100), nullable=True)
@@ -37,22 +37,27 @@ class User(Base):
     email: Mapped[str] = mapped_column(String(100), unique=True, nullable=False, index=True)
     login: Mapped[str] = mapped_column(String(50), unique=True, nullable=False, index=True)
     hashed_password: Mapped[str] = mapped_column(String(255), nullable=False)
-    registration_date: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
+    registration_date: Mapped[datetime] = mapped_column(
+        DateTime, default=datetime.utcnow, nullable=False
+    )
 
-    role_id: Mapped[int | None] = mapped_column(Integer, ForeignKey("roles.id"), nullable=True)
-    organization_id: Mapped[int | None] = mapped_column(Integer, ForeignKey("organizations.id"), nullable=True)
-    
-    team_id: Mapped[int | None] = mapped_column(
-    Integer, ForeignKey("teams.id", use_alter=True), nullable=True, comment="ID команды"
-)
-    
-    added_to_team_date: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    role_id: Mapped[int | None] = mapped_column(
+        Integer, ForeignKey("roles.id"), nullable=True
+    )
+    organization_id: Mapped[int | None] = mapped_column(
+        Integer, ForeignKey("organizations.id"), nullable=True
+    )
 
+    #  УДАЛЕНО: team_id и added_to_team_date (переехали в TeamMember)
+
+    # Связи
     role: Mapped["Role | None"] = relationship(back_populates="users")
     organization: Mapped["Organization | None"] = relationship(back_populates="users")
-    team: Mapped["Team | None"] = relationship(
-        "Team", back_populates="members", foreign_keys=[team_id]
-)
+
+    # НОВОЕ: связь с TeamMember (пользователь может быть в нескольких командах)
+    team_memberships: Mapped[list["TeamMember"]] = relationship(
+        back_populates="user", cascade="all, delete-orphan"
+    )
 
     def __repr__(self) -> str:
         return f"<User {self.login} ({self.email})>"
