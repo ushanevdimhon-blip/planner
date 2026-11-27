@@ -16,7 +16,7 @@ from app.core.db import Base
 #    и сгенерирует DROP TABLE для всего.
 from app.modules.users.models import User, Role, Organization
 from app.modules.projects.models import Project
-from app.modules.teams.models import Team
+from app.modules.teams.models import Team, TeamMember
 from app.modules.invitations.models import Invitation
 
 # Alembic Config object
